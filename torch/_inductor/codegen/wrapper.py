@@ -2434,6 +2434,10 @@ class PythonWrapperCodegen(CodeGen):
             # See [Note: Removed Graph Partition Arguments]
             self.write_prefix()
 
+        # Queue before kernel codegen; partition prefixes are written afterwards.
+        if config.size_asserts and not (V.graph.cpp_wrapper and V.graph.is_const_graph):
+            self.codegen_input_size_asserts()
+
         self.write_kernel_autotune_defs_header()
 
         if not V.graph.aot_mode:
@@ -2916,17 +2920,14 @@ class PythonWrapperCodegen(CodeGen):
 
             self.codegen_inputs()
 
-            # avoid duplicating asserts for both partition functions and
-            # the call function when using cudagraph partition
+            # Keep NaN and alignment checks in partition prefixes.
             if not (
                 is_using_cudagraph_partition()
-                and (not is_codegen_graph_partition_subgraph(self))
+                and not is_codegen_graph_partition_subgraph(self)
             ):
-                self.codegen_input_size_and_nan_asserts()
+                self.codegen_input_alignment_and_nan_asserts()
 
-    def codegen_input_size_and_nan_asserts(self) -> None:
-        if config.size_asserts:
-            self.codegen_input_size_asserts()
+    def codegen_input_alignment_and_nan_asserts(self) -> None:
         if config.alignment_asserts_inputs:
             self.codegen_input_alignment_asserts()
         if config.nan_asserts:
