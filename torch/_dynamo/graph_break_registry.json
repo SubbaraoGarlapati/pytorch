@@ -1211,6 +1211,16 @@
       ]
     }
   ],
+  "GB7728": [
+    {
+      "Gb_type": "DELETE_GLOBAL with a pending module-object write",
+      "Context": "name",
+      "Explanation": "Dynamo cannot order a global delete against a pending write to the same dict through the module object.",
+      "Hints": [
+        "It may be possible to write Dynamo tracing rules for this code. Please report an issue to PyTorch if you encounter this graph break often and it is causing performance issues."
+      ]
+    }
+  ],
   "GB0071": [
     {
       "Gb_type": "Inline attempt with __self__",
@@ -3404,6 +3414,26 @@
       ]
     }
   ],
+  "GB1811": [
+    {
+      "Gb_type": "DELETE_GLOBAL in unregistered module globals",
+      "Context": "module_name: {self.f_globals.get('__name__')}",
+      "Explanation": "Dynamo cannot safely replay global deletes for a frame whose globals dict is not the registered module __dict__.",
+      "Hints": [
+        "It may be possible to write Dynamo tracing rules for this code. Please report an issue to PyTorch if you encounter this graph break often and it is causing performance issues."
+      ]
+    }
+  ],
+  "GB8630": [
+    {
+      "Gb_type": "DELETE_GLOBAL in module with __getattr__",
+      "Context": "name",
+      "Explanation": "Dynamo cannot safely replay global deletes for a module that defines __getattr__.",
+      "Hints": [
+        "It may be possible to write Dynamo tracing rules for this code. Please report an issue to PyTorch if you encounter this graph break often and it is causing performance issues."
+      ]
+    }
+  ],
   "GB5491": [
     {
       "Gb_type": "Failed to mutate tensor data attribute across devices with different shape/strides",
@@ -4698,6 +4728,26 @@
       "Explanation": "Method {dynamic_subobj} (name={name}) of user-defined object {self.value} has a __func__ ({dynamic_subobj.__func__}) that is not a function type.",
       "Hints": [
         "Ensure that the method's __func__ is a function type."
+      ]
+    }
+  ],
+  "GB0548": [
+    {
+      "Gb_type": "Module write racing a pending global delete",
+      "Context": "name",
+      "Explanation": "Dynamo cannot order this globals-dict write through the module object against the global mutation already pending in this trace.",
+      "Hints": [
+        "It may be possible to write Dynamo tracing rules for this code. Please report an issue to PyTorch if you encounter this graph break often and it is causing performance issues."
+      ]
+    }
+  ],
+  "GB6598": [
+    {
+      "Gb_type": "DELETE_GLOBAL with a pending globals-dict write",
+      "Context": "name",
+      "Explanation": "Dynamo cannot order a global delete against a pending write to the same dict through the module __dict__.",
+      "Hints": [
+        "It may be possible to write Dynamo tracing rules for this code. Please report an issue to PyTorch if you encounter this graph break often and it is causing performance issues."
       ]
     }
   ],
@@ -7137,6 +7187,16 @@
       "Hints": [
         "Use OrderedDict methods instead of raw dict writes such as dict.__setitem__(mapping, key, value).",
         "This graph break is fundamental - it is unlikely that Dynamo will ever be able to trace through your code. Consider finding a workaround."
+      ]
+    }
+  ],
+  "GB4909": [
+    {
+      "Gb_type": "DELETE_GLOBAL in non-module globals",
+      "Context": "name",
+      "Explanation": "Dynamo cannot safely replay global deletes for an inlined function whose globals dict is not the registered module __dict__.",
+      "Hints": [
+        "It may be possible to write Dynamo tracing rules for this code. Please report an issue to PyTorch if you encounter this graph break often and it is causing performance issues."
       ]
     }
   ]
