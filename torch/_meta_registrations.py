@@ -9591,7 +9591,7 @@ def decomposes_under_static_shapes(op: OpOverload) -> bool:
 def _register_static_shape_decomps() -> None:
     # Records in the C++ fake dispatch tables the ops FakeTensorMode decomposes
     # under static shapes (the meta_table and sparse checks are made at
-    # dispatch), which the C++ fake fallback is to reject. import torch enters
+    # dispatch), which the C++ fake fallback rejects. import torch enters
     # _meta_registrations before _decomp; our top-level _decomp import finishes
     # loading decompositions before reaching this snapshot. Eligibility must
     # not grow afterwards; even _add_op_to_registry only mirrors Decomp.
